@@ -32,6 +32,7 @@ env:
   - CONFIG=ruby22
   - CONFIG=jruby
   - CONFIG=php5.6_mac
+  - CONFIG=php7.0_mac
 matrix:
   exclude:
     # It's nontrivial to programmatically install a new JDK from the command
@@ -63,6 +64,10 @@ matrix:
     # fetch pre-built Linux protoc binaries in the test.
     - os: linux
       env: CONFIG=java_compatibility
+    # The Python compatibility test currently only runs on Linux because it will
+    # fetch pre-built Linux protoc binaries in the test.
+    - os: linux
+      env: CONFIG=python_compatibility
   allow_failures:
     # These currently do not work on OS X but are being worked on by @haberman.
     - os: osx

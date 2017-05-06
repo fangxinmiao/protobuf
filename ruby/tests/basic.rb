@@ -667,6 +667,13 @@ module BasicTest
       end
     end
 
+    def test_map_corruption
+      # This pattern led to a crash in a previous version of upb/protobuf.
+      m = MapMessage.new(map_string_int32: { "aaa" => 1 })
+      m.map_string_int32['podid'] = 2
+      m.map_string_int32['aaa'] = 3
+    end
+
     def test_map_encode_decode
       m = MapMessage.new(
         :map_string_int32 => {"a" => 1, "b" => 2},
@@ -918,6 +925,16 @@ module BasicTest
         :repeated_string=>["bar1", "bar2"],
         :repeated_uint32=>[],
         :repeated_uint64=>[]
+      }
+      assert_equal expected_result, m.to_h
+
+      m = MapMessage.new(
+        :map_string_int32 => {"a" => 1, "b" => 2},
+        :map_string_msg => {"a" => TestMessage2.new(:foo => 1),
+                            "b" => TestMessage2.new(:foo => 2)})
+      expected_result = {
+        :map_string_int32 => {"a" => 1, "b" => 2},
+        :map_string_msg => {"a" => {:foo => 1}, "b" => {:foo => 2}}
       }
       assert_equal expected_result, m.to_h
     end
